@@ -193,7 +193,7 @@ let miniCharts   = {};
 let modalChart   = null;
 
 // ── Load Data ────────────────────────────────────────────────────────────────
-fetch("stocks_data.json")
+fetch("./stocks_data.json")
   .then(r => { if (!r.ok) throw new Error("stocks_data.json not found. Run screener.py first."); return r.json(); })
   .then(data => {
     allData = data;
