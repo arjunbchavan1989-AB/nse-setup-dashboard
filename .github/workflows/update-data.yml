@@ -23,10 +23,10 @@ jobs:
         uses: actions/checkout@v5
 
       # 2. Set up Python 3.12 (stable, fast, Node 24 native — no warnings)
-      - name: Set up Python 3.12
+      - name: Set up Python 3.14
         uses: actions/setup-python@v6
         with:
-          python-version: '3.12'
+          python-version: '3.14'
           cache: 'pip'        # caches pip packages → faster runs
 
       # 3. Upgrade pip, then install dependencies
