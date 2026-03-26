@@ -2,36 +2,51 @@ name: Update NSE Dashboard Data
 
 on:
   schedule:
-    # Runs at 12:00 PM UTC = 5:30 PM IST, Mon–Sat
+    # 5:30 PM IST = 12:00 PM UTC, Monday to Saturday
     - cron: '0 12 * * 1-6'
-  workflow_dispatch:
 
-env:
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+  # Allows you to trigger manually from the Actions tab anytime
+  workflow_dispatch:
 
 jobs:
   update-data:
     runs-on: ubuntu-latest
+    timeout-minutes: 30       # kill the job if it hangs beyond 30 mins
+
+    permissions:
+      contents: write         # needed to push stocks_data.json back to repo
 
     steps:
+
+      # 1. Check out your repository
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      # 2. Set up Python 3.12 (stable, fast, Node 24 native — no warnings)
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v6
         with:
-          python-version: '3.14'
+          python-version: '3.12'
+          cache: 'pip'        # caches pip packages → faster runs
 
+      # 3. Upgrade pip, then install dependencies
       - name: Install dependencies
-        run: pip install -r requirements.txt
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
 
+      # 4. Run the screener — generates stocks_data.json
       - name: Run screener
         run: python screener.py
 
-      - name: Commit updated data
+      # 5. Commit and push the updated stocks_data.json back to repo
+      - name: Commit and push updated data
         run: |
-          git config user.name "github-actions[bot]"
+          git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add stocks_data.json
-          git diff --staged --quiet || git commit -m "Auto-update: $(date +'%Y-%m-%d %H:%M UTC')"
-          git push
+          # Only commit if stocks_data.json actually changed
+          git diff --staged --quiet && echo "No changes to commit" || (
+            git commit -m "data: auto-update $(date +'%d %b %Y %H:%M IST')"
+            git push
+          )
