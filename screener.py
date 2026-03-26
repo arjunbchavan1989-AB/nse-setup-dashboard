@@ -199,13 +199,8 @@ def download_in_batches(symbols, batch_size=80):
 
     for batch_num, start in enumerate(range(0, total, batch_size), 1):
         batch   = symbols[start : start + batch_size]
-       TICKER_MAP = {
-    "ARE&M":   "ARE&M.NS",
-    "J&KBANK": "J&KBANK.NS",
-    "M&MFIN":  "M&MFIN.NS",
-    "GVT&D":   "GVT&D.NS",
-}
-tickers = [TICKER_MAP.get(s, s + ".NS") for s in batch]
+        tickers = [s + ".NS" for s in batch]
+
 
         print(f"  Batch {batch_num}/{num_batches}: {len(tickers)} stocks ...", end=" ")
 
