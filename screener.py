@@ -232,7 +232,14 @@ def run_scan():
     return results
 
 if __name__ == "__main__":
-    data = run_scan()
-    with open("stocks_data.json", "w") as f:
-        json.dump(data, f)
-    print("✅ Saved to stocks_data.json — open dashboard.html in browser.")
+    try:
+        data = run_scan()
+        if data:
+            with open("stocks_data.json", "w") as f:
+                json.dump(data, f)
+            print(f"✅ Saved {len(data)} stocks to stocks_data.json")
+        else:
+            print("⚠️ No data returned — keeping existing stocks_data.json")
+    except Exception as e:
+        print(f"❌ Scan failed: {e}")
+        raise  # Re-raise so GitHub Actions marks the run as failed
