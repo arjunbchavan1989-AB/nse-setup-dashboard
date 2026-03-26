@@ -203,9 +203,16 @@ fetch("./stocks_data.json")
     document.getElementById("last-updated").textContent = "Last updated: " + new Date().toLocaleString("en-IN");
   })
   .catch(err => {
-    document.getElementById("loading").innerHTML =
-      `<div style="color:#ef4444">⚠️ ${err.message}</div>
-       <p style="margin-top:8px;font-size:0.8rem;color:#64748b">Place <b>stocks_data.json</b> in the same folder and refresh.</p>`;
+    document.getElementById("loading").innerHTML = `
+      <div style="color:#ef4444;font-size:1rem;margin-bottom:12px">
+        ⚠️ Could not load data
+      </div>
+      <div style="color:#94a3b8;font-size:0.85rem;line-height:1.8">
+        <b>Error:</b> ${err.message}<br>
+        <b>Fix 1:</b> Make sure <code>stocks_data.json</code> exists in the repo<br>
+        <b>Fix 2:</b> Go to Actions tab → Run workflow → wait 8 mins<br>
+        <b>Fix 3:</b> Hard refresh the page: <code>Ctrl + Shift + R</code>
+      </div>`;
   });
 
 // ── Stats ─────────────────────────────────────────────────────────────────────
